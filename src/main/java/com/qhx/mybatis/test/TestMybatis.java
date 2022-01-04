@@ -62,6 +62,6 @@ public class TestMybatis {
             System.out.println(em);
         }
         sqlSession.close();
-        System.out.println("111");
+        System.out.println("111");//aaasss
     }
 }
