@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qhx.mybatis.dao.EmployeeMapperPlus">
+
+    <resultMap id="BaseMap" type="com.qhx.mybatis.bean.Employee">
+        <id column="id" property="id"/>
+        <result column="last_Name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+    </resultMap>
+    <select id="getEmpByPrimaryKey" resultMap="BaseMap">
+        select * from user where id=#{id}
+    </select>
+
+<!--    <resultMap id="BaseMap2" type="com.qhx.mybatis.bean.Employee" extends="BaseMap">-->
+<!--        <result column="did" property="dep.id"/>-->
+<!--        <result column="dep_name" property="dep.departmentName"/>-->
+<!--    </resultMap>-->
+<!--    <select id="getEmpAndDept" resultMap="BaseMap2">-->
+<!--        SELECT u.id,u.last_name,u.email,u.gender,u.d_id,d.id did,d.dep_name FROM `user` u,department d-->
+<!--        WHERE u.d_id=d.id AND u.id=1-->
+<!--    </select>-->
+
+    <resultMap id="BaseMap3" type="com.qhx.mybatis.bean.Employee" extends="BaseMap">
+        <association property="dep" javaType="com.qhx.mybatis.bean.Department">
+            <result column="did" property="id"/>
+            <result column="dep_name" property="departmentName"/>
+        </association>
+    </resultMap>
+    <select id="getEmpAndDept" resultMap="BaseMap3">
+        SELECT u.id,u.last_name,u.email,u.gender,u.d_id,d.id did,d.dep_name FROM `user` u,department d
+        WHERE u.d_id=d.id AND u.id=1
+    </select>
+    <resultMap id="BaseMap4" type="com.qhx.mybatis.bean.Employee" extends="BaseMap">
+        <!--<discriminator javaType="">
+            <case value=""></case>
+            </discriminator>
+            鉴别器：判断某列的值，然后根据某列的值改变封装行为
+            column:指定判断的列名
+            javaType:列值对应的java类型
+            resultType:指定封装的结果类型,不可省略 resultMap二选一-->
+        <discriminator javaType="string" column="gender">
+            <case value="0" resultType="com.qhx.mybatis.bean.Employee">
+                <association property="dep"
+                             column="d_id"
+                             select="com.qhx.mybatis.dao.DepartmentMapper.getDepById"/>
+            </case>
+            <case value="1" resultType="com.qhx.mybatis.bean.Employee">
+                <id column="id" property="id"/>
+                <result column="last_Name" property="lastName"/>
+                <result column="last_Name" property="email"/>
+                <result column="gender" property="gender"/>
+            </case>
+        </discriminator>
+
+    </resultMap>
+    <select id="getEmpByIdStep" resultMap="BaseMap4" >
+        select * from user where id=#{id}
+    </select>
+
+</mapper>

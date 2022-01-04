@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    namespace:名称空间, 对应接口的全类名
+ -->
+<mapper namespace="com.qhx.mybatis.dao.EmployeeMapper">
+    <!--
+        select: 配置查询
+        id: 唯一标识, 对应接口中的方法名
+        resultType: 返回值类型, 类的全类名, 如果返回值是集合写集合中泛型的类型
+     -->
+    <select id="getEmpById" resultType="com.qhx.mybatis.bean.Employee">
+        select * from user where id=#{id}
+    </select>
+
+    <insert id="addEmp" parameterType="com.qhx.mybatis.bean.Employee" useGeneratedKeys="true" keyProperty="id">
+        insert into user(last_name,email,gender) values(#{lastName},#{email},#{gender})
+    </insert>
+
+    <update id="updateEmp">
+        update user set last_name=#{lastName},email=#{email},gender=#{gender}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteEmpById">
+        delete from user where id=#{id}
+    </delete>
+
+    <select id="getEmpByIdAndLastName" resultType="com.qhx.mybatis.bean.Employee">
+        select * from user where id=#{id} and last_Name=#{param2}
+    </select>
+
+    <select id="getEmpByMap" resultType="com.qhx.mybatis.bean.Employee">
+        select * from user where id=#{id} and last_Name=#{lastName}
+    </select>
+
+    <select id="getEmpByLastNameLike" resultType="com.qhx.mybatis.bean.Employee">
+        select * from user where last_name like #{lastName}
+    </select>
+
+    <select id="getEmpByIdReturnMap" resultType="map">
+        select * from user where id=#{id}
+    </select>
+
+    <select id="getEmpByNameLike" resultType="com.qhx.mybatis.bean.Employee">
+        select * from user where last_name like #{lastName}
+    </select>
+</mapper>

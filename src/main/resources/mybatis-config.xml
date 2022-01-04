@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- configuration: 核心配置文件 标签顺序不可打乱-->
+<configuration>
+
+    <!--
+		properties: 引入外部properties文件 必须放在最前面,否则会报错
+			resource: 类路径下
+			url: 磁盘路径或网络路径
+ 	-->
+    <properties resource="jdbc.properties"/>
+
+    <!-- 设置日志输出, 方便观察sql语句和参数 -->
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+
+
+    <!--
+        environments配置项目的运行环境, 可以配置多个,可以配置测试/开发环境
+        default: 启用的环境
+		id代表当前环境唯一标识
+		transactionManager事务管理器：JDBC/MANAGED
+		自定义事务管理器：实现TransactionFactory接口
+		dataSource数据源：UNPOOLED/POOLED/JNDI，也可自定义
+     -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!-- 数据库连接信息 -->
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--支持多数据库厂商 DB_VENDOR作用：得到数据库厂商标识，mybatis可以根据不同的标识执行不同sql，在Mapper文件中加入databaseid，也就是下文的value-->
+    <databaseIdProvider type="DB_VENDOR">
+        <property name="MYSQL" value="mysql"></property><!--起别名-->
+    </databaseIdProvider>
+
+    <!-- 每一个Mapper.xml都需要在MyBatis核心配置文件中注册 resource引用类路径下 url引用磁盘路径下 -->
+    <!--注册接口 class="" sql映射文件名和接口同名，并放在同一目录下/若无sql映射文件，用@Select（"sql"）注解-->
+    <mappers>
+        <mapper resource="employeeMapper.xml"/>
+        <mapper resource="employeeMapper-plus.xml"/>
+        <mapper resource="departmentMapper.xml"/>
+        <mapper resource="employeeDynamicSQLMapper.xml"/>
+    </mappers>
+
+</configuration>
